@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hackathons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-top: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .back-off-button {
+            background-color: #f44336;
+        }
+        .back-off-button:hover {
+            background-color: #e53935;
+        }
+        .participated-button {
+            background-color: #2196F3;
+            margin-left: 10px;
+        }
+        .participated-button:hover {
+            background-color: #1e88e5;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        {% if user.is_authenticated and user.student %}
+            <a href="{% url 'student_home' %}" class="home-button">Home</a>
+            
+            <a href="{% url 'participated_hackathons'  %}">My participated hackathons</a>
+        {% elif user.is_authenticated %}
+            <a href="{% url 'organizer_home' user.username %}">Home</a>
+        {% endif %}
+    </header>
+    <h2>Hackathons</h2>
+    <ul>
+        {% for hackathon in hackathons %}
+            <li>
+                {{ hackathon.title }} - {{ hackathon.start_date|date:"Y-m-d" }} to {{ hackathon.end_date|date:"Y-m-d" }}
+                {% if user.is_authenticated and user.student %}
+                    {% if hackathon in user.student.participated_hackathons.all %}
+                        <button class="back-off-button" onclick="confirmBackOff('{{ hackathon.id }}', '{{ hackathon.title }}')">Back Off</button>
+                    {% else %}
+                        <button onclick="participate('{{ hackathon.id }}')">Participate</button>
+                    {% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <script>
+        function participate(hackathonId) {
+            if (confirm('Are you sure you want to participate in this hackathon?')) {
+                fetch(`/participate/${hackathonId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('You have participated in the hackathon!');
+                        location.reload();  // Reload the page to reflect participation
+                    } else {
+                        alert('There was an error. Please try again.');
+                    }
+                });
+            }
+        }
+
+        function confirmBackOff(hackathonId, hackathonTitle) {
+            if (confirm(`Are you sure you want to back off from '${hackathonTitle}'?`)) {
+                fetch(`/back_off_hackathon/${hackathonId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('You have backed off from the hackathon.');
+                        location.reload();  // Reload the page to reflect the change
+                    } else {
+                        alert('There was an error. Please try again.');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

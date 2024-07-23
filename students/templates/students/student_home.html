@@ -1,0 +1,25 @@
+<!-- students/templates/students/student_home.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome, {{ request.user.username }}</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome, {{ request.user.username }}</h2>
+        <p>This is your student home page.</p>
+        <a href="{% url 'hackathon_list' %}">
+            <button>View Hackathons</button>
+            <a href="{% url 'participated_hackathons' %}" class="button">View Participated Hackathons</a>
+        
+        <!-- Logout Button -->
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+        
+    </div>
+    
+</body>
+</html>

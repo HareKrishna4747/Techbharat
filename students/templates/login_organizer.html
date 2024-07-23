@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Organizer Login</title>
+</head>
+<body>
+    <h1>Login as Organizer</h1>
+    <form method="post" action="{% url 'login_organizer' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+        <input type="hidden" name="next" value="{% if request.user.is_authenticated %}{% url 'organizer_home' request.user.username %}{% else %}{% url 'home' %}{% endif %}">
+    </form>
+    <p>If you don't have an account, <a href="{% url 'register_organizer' %}">register here</a>.</p>
+    <a href="{% url 'home' %}" class="home-button">Home</a>
+</body>
+</html>

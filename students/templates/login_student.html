@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Login</title>
+</head>
+<body>
+    <h1>Login as Student</h1>
+    <form method="post" action="{% url 'login_student' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+    <p>If you don't have an account, <a href="{% url 'register_student' %}">register here</a>.</p>
+    <a href="{% url 'home' %}" class="home-button">Home</a>
+</body>
+</html>

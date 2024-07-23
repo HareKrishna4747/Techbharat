@@ -1,0 +1,20 @@
+<!-- students/templates/students/organizer_home.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Organizer Home</title>
+</head>
+<body>
+    <h2>Welcome, Organizer!</h2>
+    <p>This is the organizer home page.</p>
+    <a href="{% url 'add_hackathon' %}" class="btn btn-primary">List a Hackathon</a>
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+        <a href="{% url 'my_hackathons' %}" class="btn btn-primary">My Hackathons</a>
+    </form>
+    
+
+</body>
+</html>
