@@ -2,17 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Organizer Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login as Organizer</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Login as Organizer</h1>
-    <form method="post" action="{% url 'login_organizer' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Login</button>
-        <input type="hidden" name="next" value="{% if request.user.is_authenticated %}{% url 'organizer_home' request.user.username %}{% else %}{% url 'home' %}{% endif %}">
-    </form>
-    <p>If you don't have an account, <a href="{% url 'register_organizer' %}">register here</a>.</p>
-    <a href="{% url 'home' %}" class="home-button">Home</a>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#" style="font-weight: bolder; font-size: 40px;">HackBharat</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Hackathons near me</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">National hackathons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Private hackathons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary" href="#">Log in</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Login Form -->
+    <div class="container mt-5">
+        <h1>Login as Organizer</h1>
+        <form method="post" action="{% url 'login_organizer' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Login</button>
+            <input type="hidden" name="next" value="{% if request.user.is_authenticated %}{% url 'organizer_home' request.user.username %}{% else %}{% url 'home' %}{% endif %}">
+        </form>
+        <p>If you don't have an account, <a href="{% url 'register_organizer' %}">register here</a>.</p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
