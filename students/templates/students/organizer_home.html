@@ -1,20 +1,60 @@
-<!-- students/templates/students/organizer_home.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Organizer Home</title>
+    {% load static %}
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .logout-button {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+        }
+        .logout-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h2>Welcome, Organizer!</h2>
-    <p>This is the organizer home page.</p>
-    <a href="{% url 'add_hackathon' %}" class="btn btn-primary">List a Hackathon</a>
-    <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-        <a href="{% url 'my_hackathons' %}" class="btn btn-primary">My Hackathons</a>
-    </form>
-    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#" style="font-weight: bolder; font-size: 40px;">Hackभारत</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <span class="nav-link">Welcome, {{ username }}</span>
+                </li>
+                <li class="nav-item">
+                    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-button">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
+    <!-- Content -->
+    <div class="container mt-5">
+        <h1>Organizer Home</h1>
+        <p>Welcome to the organizer's dashboard. Use the navigation links below to manage hackathons.</p>
+        <div>
+            <a class="btn btn-primary" href="{% url 'my_hackathons' %}">My Hackathons</a>
+            <a class="btn btn-secondary" href="{% url 'add_hackathon' %}">Create Hackathon</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
