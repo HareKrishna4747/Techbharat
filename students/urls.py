@@ -3,7 +3,7 @@ from . import views
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LogoutView
 from django.urls import path
-from .views import participate_in_hackathon,my_hackathons
+from .views import participate_in_hackathon,my_hackathons,CancelHackathonView
 urlpatterns = [
     path('', views.home, name='home'),
     path('student_home/', views.student_home, name='student_home'),
@@ -20,5 +20,6 @@ urlpatterns = [
     path('participated_hackathons/', views.participated_hackathons, name='participated_hackathons'),
     path('my_hackathons/', views.my_hackathons, name='my_hackathons'),
     path('back_off_hackathon/<int:hackathon_id>/', views.back_off_hackathon, name='back_off_hackathon'),
+    path('cancel_hackathon/<int:pk>/', CancelHackathonView.as_view(), name='cancel_hackathon'),
     
 ]

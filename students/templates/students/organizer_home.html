@@ -8,8 +8,27 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
+        .navbar-brand {
+            font-weight: bolder;
+            font-size: 24px;
+        }
+        .nav-link {
+            color: #6c757d;
+            font-weight: bold;
+        }
+        .nav-link:hover {
+            color: #4c6ef5;
+        }
+        .btn-primary {
+            background-color: #4c6ef5;
+            border-color: #4c6ef5;
+        }
+        .btn-primary:hover {
+            background-color: #3b5bdb;
+            border-color: #3b5bdb;
+        }
         .logout-button {
-            background-color: #007bff;
+            background-color: #4c6ef5;
             color: white;
             padding: 5px 10px;
             text-decoration: none;
@@ -17,19 +36,22 @@
             border-radius: 5px;
         }
         .logout-button:hover {
-            background-color: #0056b3;
+            background-color: #3b5bdb;
         }
     </style>
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#" style="font-weight: bolder; font-size: 40px;">Hackभारत</a>
+        <a class="navbar-brand" href="{% url 'home' %}">Hackभारत</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About us</a>
+                </li>
                 <li class="nav-item">
                     <span class="nav-link">Welcome, {{ username }}</span>
                 </li>

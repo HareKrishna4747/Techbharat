@@ -161,3 +161,18 @@ def back_off_hackathon(request, hackathon_id):
     if hackathon in student.participated_hackathons.all():
         student.participated_hackathons.remove(hackathon)
     return redirect('participated_hackathons')
+
+# views.py
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.urls import reverse
+from django.views import View
+from .models import Hackathon
+
+class CancelHackathonView(View):
+    def post(self, request, pk):
+        hackathon = get_object_or_404(Hackathon, pk=pk, organizer=request.user.organizer)
+        hackathon.delete()
+        messages.success(request, 'Hackathon deleted successfully.')
+        return redirect('my_hackathons')
+

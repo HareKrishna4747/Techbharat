@@ -5,12 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login as Student</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        .navbar-brand {
+            font-weight: bolder;
+            font-size: 24px;
+        }
+        .btn-primary {
+            background-color: #4c6ef5;
+            border-color: #4c6ef5;
+            margin-right: 10px;
+        }
+        .btn-primary:hover {
+            background-color: #3b5bdb;
+            border-color: #3b5bdb;
+        }
+        .main-content {
+            margin-top: 50px;
+            text-align: center;
+        }
+        .tagline {
+            font-size: 36px;
+            font-weight: bold;
+        }
+        .subtagline {
+            font-size: 18px;
+            color: #6c757d;
+        }
+        .illustration {
+            max-width: 100%;
+            height: auto;
+        }
+        .nav-link {
+            color: #6c757d;
+            font-weight: bold;
+        }
+        .nav-link:hover {
+            color: #4c6ef5;
+        }
+        .cta-buttons {
+            margin-top: 20px;
+        }
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .content, .image-container {
+            flex: 1;
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#" style="font-weight: bolder; font-size: 40px;">Hackभारत</a>
+        <a class="navbar-brand" href="{% url 'home' %}">Hackभारत</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -29,21 +77,26 @@
                     <a class="nav-link" href="#">About us</a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-primary" href="#">Log in</a>
+                    <a class="btn btn-primary" href="#">Sign up</a>
                 </li>
             </ul>
         </div>
     </nav>
 
     <!-- Login Form -->
-    <div class="container mt-5">
-        <h1>Login as Student</h1>
-        <form method="post" action="{% url 'login_student' %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-        <p>If you don't have an account, <a href="{% url 'register_student' %}">register here</a>.</p>
+    <div class="container main-content">
+        <div class="content">
+            <h1>Login as Student</h1>
+            <form method="post" action="{% url 'login_student' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <p>If you don't have an account, <a href="{% url 'register_student' %}">register here</a>.</p>
+        </div>
+        <div class="image-container">
+            <img src="path/to/your/image.png" alt="Illustration" class="illustration">
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
