@@ -2,111 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hackathons</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        h2 {
-            color: #333;
-            text-align: center;
-            margin-top: 20px;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-            max-width: 600px;
-            margin: 20px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        li {
-            padding: 10px;
-            border-bottom: 1px solid #ccc;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        li:last-child {
-            border-bottom: none;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .back-off-button {
-            background-color: #f44336;
-        }
-        .back-off-button:hover {
-            background-color: #e53935;
-        }
-        .participated-button {
-            background-color: #2196F3;
-            margin-left: 10px;
-        }
-        .participated-button:hover {
-            background-color: #1e88e5;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        {% if user.is_authenticated and user.student %}
-            <a href="{% url 'student_home' %}" class="home-button">Home</a>
-            
-            <a href="{% url 'participated_hackathons'  %}">My participated hackathons</a>
-        {% elif user.is_authenticated %}
-            <a href="{% url 'organizer_home' user.username %}">Home</a>
-        {% endif %}
-    </header>
-    <h2>Hackathons</h2>
-    <ul>
-        {% for hackathon in hackathons %}
-            <li>
-                {{ hackathon.title }} - {{ hackathon.start_date|date:"Y-m-d" }} to {{ hackathon.end_date|date:"Y-m-d" }}
-                {% if user.is_authenticated and user.student %}
-                    {% if hackathon in user.student.participated_hackathons.all %}
-                        <button class="back-off-button" onclick="confirmBackOff('{{ hackathon.id }}', '{{ hackathon.title }}')">Back Off</button>
-                    {% else %}
-                        <button onclick="participate('{{ hackathon.id }}')">Participate</button>
-                    {% endif %}
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <script>
-        function participate(hackathonId) {
-            if (confirm('Are you sure you want to participate in this hackathon?')) {
-                fetch(`/participate/${hackathonId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('You have participated in the hackathon!');
-                        location.reload();  // Reload the page to reflect participation
-                    } else {
-                        alert('There was an error. Please try again.');
-                    }
-                });
-            }
-        }
-
         function confirmBackOff(hackathonId, hackathonTitle) {
             if (confirm(`Are you sure you want to back off from '${hackathonTitle}'?`)) {
                 fetch(`/back_off_hackathon/${hackathonId}/`, {
@@ -126,6 +26,128 @@
                 });
             }
         }
+
+        function participate(hackathonId) {
+            if (confirm('Are you sure you want to participate in this hackathon?')) {
+                fetch(`/participate/${hackathonId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('You have participated in the hackathon!');
+                        location.reload();  // Reload the page to reflect participation
+                    } else {
+                        alert('There was an error. Please try again.');
+                    }
+                });
+            }
+        }
     </script>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        {% if user.is_authenticated and user.student %}
+            <a class="navbar-brand" href="{% url 'student_home' %}" style="font-weight: bolder; font-size: 40px;">HackNext</a>
+            {% elif user.is_authenticated %}
+            <a class="navbar-brand" href="{% url 'organizer_home' user.username %}" style="font-weight: bolder; font-size: 40px;">HackNext</a>
+        {% else %}
+            <a class="navbar-brand" href="#" style="font-weight: bolder; font-size: 40px;">HackNext</a>
+        {% endif %}
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            
+            <ul class="navbar-nav ml-auto">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            {% if user.is_authenticated and user.student %}
+                                <a class="nav-link" href="{% url 'participated_hackathons' %}">My Participated Hackathons</a>
+                            {% elif user.is_authenticated %}
+                                <a class="nav-link" href="{% url 'organizer_home' user.username %}">HackNext</a>
+                                <a class="nav-link" href="{% url 'my_hackathons' %}">My Hackathons</a>
+                            {% else %}
+                                <a class="nav-link" href="#">HackNext</a>
+                            {% endif %}
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Hackathons near me</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">National hackathons</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Private hackathons</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About us</a>
+                        </li>
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <form action="{% url 'logout' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Log out</button>
+                            </form>
+                        </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="btn btn-primary" href="{% url 'login' %}">Log in</a>
+                            </li>
+                        {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <h1 class="mt-4">Available Hackathons</h1>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>S. No.</th>
+                <th>Hackathon Name</th>
+                <th>Organizer Details</th>
+                <th>Location</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Application</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hackathon in hackathons %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ hackathon.title }}</td>
+                    <td>{{ hackathon.organizer }}</td>
+                    <td>{{ hackathon.location }}</td>
+                    <td>{{ hackathon.start_date|date:"d-M-Y" }}</td>
+                    <td>{{ hackathon.end_date|date:"d-M-Y" }}</td>
+                    <td>
+                        {% if user.is_authenticated and user.student %}
+                            {% if hackathon in user.student.participated_hackathons.all %}
+                                <button class="btn btn-danger" onclick="confirmBackOff('{{ hackathon.id }}', '{{ hackathon.title }}')">Back Off</button>
+                            {% else %}
+                                <button class="btn btn-primary" onclick="participate('{{ hackathon.id }}')">Participate</button>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
+
+
+
+
