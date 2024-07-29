@@ -19,6 +19,8 @@ def register_student(request):
             user = form.save()
             login(request, user)
             return redirect('student_home')
+        else:
+            print(form.errors)
     else:
         form = StudentRegistrationForm()
     return render(request, 'students/register_student.html', {'form': form})

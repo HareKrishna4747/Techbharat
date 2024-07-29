@@ -6,51 +6,67 @@
     <title>Login as Organizer</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .navbar-brand {
-            font-weight: bolder;
-            font-size: 24px;
-        }
-    </style>
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'home' %}">Hackभारत</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Hackathons near me</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">National hackathons</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Private hackathons</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="btn btn-primary" href="#">Sign up</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'home' %}" style="font-weight: bolder; font-size: 40px;">Hackभारत</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Hackathons near me</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">National hackathons</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Private hackathons</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">About us</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-primary" href="#">Sign up</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
     <!-- Login Form -->
     <div class="container mt-5">
-        <h1>Login as Organizer</h1>
+        <h1 style="margin-left: 5%">Login as Organizer</h1>
         <form method="post" action="{% url 'login_organizer' %}">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Login</button>
+            <div class="mb-3">
+                <label for="id_username" class="form-label" style="margin-left: 5%;">Username</label>
+                <input type="text" class="form-control" id="id_username" name="username" style="width: 50%; margin-left: 5%;">
+            </div>
+            <div class="mb-3">
+                <label for="id_password" class="form-label" style="margin-left: 5%;">Password</label>
+                <input type="password" class="form-control" id="id_password" name="password" style="width: 50%; margin-left: 5%;">
+            </div>
+            {% if form.errors %}
+        <div class="alert alert-danger" style="width: 50%; margin-left: 5%;">
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field|capfirst }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary" style="margin-left: 5%;">Log in</button>
             <input type="hidden" name="next" value="{% if request.user.is_authenticated %}{% url 'organizer_home' request.user.username %}{% else %}{% url 'home' %}{% endif %}">
+            <p style="margin-left: 5%"><br>If you don't have an account, <a href="{% url 'register_organizer' %}">register here</a>.</p>
         </form>
-        <p>If you don't have an account, <a href="{% url 'register_organizer' %}">register here</a>.</p>
+    </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -58,3 +74,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
+
+            
