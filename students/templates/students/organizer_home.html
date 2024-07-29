@@ -10,7 +10,7 @@
     <style>
         .navbar-brand {
             font-weight: bolder;
-            font-size: 24px;
+            font-size: 35px;
         }
         .nav-link {
             color: #6c757d;
@@ -50,10 +50,19 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="#">Hackathons near me</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">National hackathons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Private hackathons</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#">About us</a>
                 </li>
                 <li class="nav-item">
-                    <span class="nav-link">Welcome, {{ username }}</span>
+                    <span class="nav-link">{{ username }}</span>
                 </li>
                 <li class="nav-item">
                     <form action="{% url 'logout' %}" method="post" style="display: inline;">

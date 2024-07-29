@@ -4,13 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Hackathons</title>
+    {% load static %}
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .navbar-brand {
+            font-weight: bolder;
+            font-size: 35px;
+        }
+        .nav-link {
+            color: #6c757d;
+            font-weight: bold;
+        }
+        .nav-link:hover {
+            color: #4c6ef5;
+        }
+        .btn-primary {
+            background-color: #4c6ef5;
+            border-color: #4c6ef5;
+        }
+        .btn-primary:hover {
+            background-color: #3b5bdb;
+            border-color: #3b5bdb;
+        }
+        .logout-button {
+            background-color: #4c6ef5;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+        }
+        .logout-button:hover {
+            background-color: #3b5bdb;
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'organizer_home' user.username %}" style="font-weight: bolder; font-size: 40px;">Hackभारत</a>
+        <a class="navbar-brand" href="{% url 'organizer_home' user.username %}">Hackभारत</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -29,7 +62,13 @@
                     <a class="nav-link" href="#">About us</a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-primary" href="#">Log in</a>
+                    <span class="nav-link">{{ username }}</span>
+                </li>
+                <li class="nav-item">
+                    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-button">Logout</button>
+                    </form>
                 </li>
             </ul>
         </div>
@@ -38,23 +77,36 @@
     <div class="container mt-5">
         <a href="{% url 'organizer_home' user.username %}" class="btn btn-primary mb-3">Home</a>
         <h1>My Hackathons</h1>
-        <ul class="list-group">
-            {% for hackathon in hackathons %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5>{{ hackathon.title }}</h5>
-                        <p>{{ hackathon.description }}</p>
-                    </div>
-                    <form method="post" action="{% url 'cancel_hackathon' hackathon.id %}" onsubmit="return confirmDelete();">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Cancel</button>
-                    </form>
-                </li>
-            {% empty %}
-                <li class="list-group-item">No hackathons found.</li>
-            {% endfor %}
-        </ul>
-        <a href="{% url 'add_hackathon' %}" class="btn btn-secondary mt-3">Add hackathons</a>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>S. No.</th>
+                    <th>Hackathon Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hackathon in hackathons %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ hackathon.title }}</td>
+                        <td>{{ hackathon.description }}</td>
+                        <td>
+                            <form method="post" action="{% url 'cancel_hackathon' hackathon.id %}" onsubmit="return confirmDelete();">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Cancel</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No hackathons found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'add_hackathon' %}" class="btn btn-secondary mt-3">Add Hackathons</a>
     </div>
 
     <script>

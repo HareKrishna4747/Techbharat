@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Hackathon</title>
+    <title>My Hackathons</title>
+    {% load static %}
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css"> <!-- Optional: Add your custom CSS file -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
         .navbar-brand {
             font-weight: bolder;
-            font-size: 24px;
+            font-size: 35px;
         }
         .nav-link {
             color: #6c757d;
@@ -42,17 +43,26 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'home' %}">Hackभारत</a>
+        <a class="navbar-brand" href="{% url 'organizer_home' user.username %}">Hackभारत</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="#">Hackathons near me</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">National hackathons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Private hackathons</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#">About us</a>
                 </li>
                 <li class="nav-item">
-                    <span class="nav-link">Welcome, {{ username }}</span>
+                    <span class="nav-link">{{ username }}</span>
                 </li>
                 <li class="nav-item">
                     <form action="{% url 'logout' %}" method="post" style="display: inline;">
