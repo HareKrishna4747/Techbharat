@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Home</title>
+    {% load static %}
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .navbar-brand {
+            font-weight: bolder;
+            font-size: 35px;
+        }
+        .nav-link {
+            color: #6c757d;
+            font-weight: bold;
+        }
+        .nav-link:hover {
+            color: #4c6ef5;
+        }
+        .btn-primary {
+            background-color: #4c6ef5;
+            border-color: #4c6ef5;
+        }
+        .btn-primary:hover {
+            background-color: #3b5bdb;
+            border-color: #3b5bdb;
+        }
+        .logout-button {
+            background-color: #4c6ef5;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+        }
+        .logout-button:hover {
+            background-color: #3b5bdb;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'home' %}">Hackभारत</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Hackathons near me</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">National hackathons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Private hackathons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About us</a>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link">{{ sponsor.user.username }}</span>
+                </li>
+                <li class="nav-item">
+                    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-button">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="container mt-5">
+        <h1>Sponsor Home</h1>
+        <p>Welcome to the sponsor's dashboard. Use the navigation links below to manage your sponsorships.</p>
+        <div>
+            <a class="btn btn-primary" href="#">My Sponsorships</a>
+            <a class="btn btn-secondary" href="#">Create Sponsorship</a>
+            <a class="btn btn-primary" href="#">Hackathons Near me</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

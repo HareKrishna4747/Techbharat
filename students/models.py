@@ -3,6 +3,13 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
+class Sponsor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    
+
+    def __str__(self):
+        return self.user.username
+    
 class Organizer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
@@ -14,6 +21,7 @@ class Hackathon(models.Model):
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(default=timezone.now)
     organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE,default=1)
+    sponsors = models.ManyToManyField(Sponsor, related_name='sponsored_hackathons', blank=True)  # ManyToManyField for sponsors
 
     def __str__(self):
         return self.title

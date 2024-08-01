@@ -59,6 +59,8 @@ def dashboard(request):
         elif hasattr(request.user, 'organizer'):
             organizer = Organizer.objects.get(user=request.user)
             return redirect('organizer_home', username=organizer.user.username)
+        elif hasattr(request.user, 'sponsor'):
+            return redirect('sponsor_home')
         else:
             return redirect('home')
     else:
@@ -178,3 +180,31 @@ class CancelHackathonView(View):
         messages.success(request, 'Hackathon deleted successfully.')
         return redirect('my_hackathons')
 
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Organizer, Sponsor
+
+@login_required
+def sponsor_home(request):
+    # Assuming you want to pass some data to the sponsor home template
+    context = {
+        'sponsor': request.user.sponsor,
+    }
+    return render(request, 'sponsor_home.html', context)
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from .forms import SponsorRegistrationForm
+
+def register_sponsor(request):
+    if request.method == 'POST':
+        form = SponsorRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('sponsor_home')
+    else:
+        form = SponsorRegistrationForm()
+    return render(request, 'register_sponsor.html', {'form': form})
