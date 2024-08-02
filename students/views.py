@@ -59,6 +59,8 @@ def dashboard(request):
         elif hasattr(request.user, 'organizer'):
             organizer = Organizer.objects.get(user=request.user)
             return redirect('organizer_home', username=organizer.user.username)
+        elif hasattr(request.user, 'sponsor'):
+            return redirect('sponsor_home')
         else:
             return redirect('home')
     else:
@@ -178,3 +180,49 @@ class CancelHackathonView(View):
         messages.success(request, 'Hackathon deleted successfully.')
         return redirect('my_hackathons')
 
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+from .models import Hackathon, Sponsor
+from .forms import SponsorRegistrationForm
+
+@login_required
+def sponsor_home(request):
+    context = {
+        'sponsor': get_object_or_404(Sponsor, user=request.user),
+    }
+    return render(request, 'sponsor_home.html', context)
+
+def register_sponsor(request):
+    if request.method == 'POST':
+        form = SponsorRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('sponsor_home')
+    else:
+        form = SponsorRegistrationForm()
+    return render(request, 'register_sponsor.html', {'form': form})
+
+@login_required
+def sponsor_hackathon(request, hackathon_id):
+    hackathon = get_object_or_404(Hackathon, id=hackathon_id)
+    sponsor = get_object_or_404(Sponsor, user=request.user)
+    if hackathon not in sponsor.sponsored_hackathons.all():
+        sponsor.sponsored_hackathons.add(hackathon)
+    return redirect('sponsored_hackathons')
+
+@login_required
+def withdraw_sponsorship(request, hackathon_id):
+    hackathon = get_object_or_404(Hackathon, id=hackathon_id)
+    sponsor = get_object_or_404(Sponsor, user=request.user)
+    if hackathon in sponsor.sponsored_hackathons.all():
+        sponsor.sponsored_hackathons.remove(hackathon)
+    return redirect('sponsored_hackathons')
+
+@login_required
+def sponsored_hackathons(request):
+    sponsor = get_object_or_404(Sponsor, user=request.user)
+    sponsored_hackathons = sponsor.sponsored_hackathons.all()
+    return render(request, 'sponsored_hackathons.html', {'sponsored_hackathons': sponsored_hackathons})

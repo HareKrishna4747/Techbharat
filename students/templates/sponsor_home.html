@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Home</title>
+    <title>Sponsor Home</title>
     {% load static %}
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -49,6 +49,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
+                
                 <li class="nav-item">
                     <a class="nav-link" href="#">Hackathons near me</a>
                 </li>
@@ -62,7 +63,7 @@
                     <a class="nav-link" href="#">About us</a>
                 </li>
                 <li class="nav-item">
-                    <span class="nav-link">{{ request.user.username }}</span>
+                    <span class="nav-link">{{ sponsor.user.username }}</span>
                 </li>
                 <li class="nav-item">
                     <form action="{% url 'logout' %}" method="post" style="display: inline;">
@@ -75,12 +76,12 @@
     </nav>
 
     <!-- Content -->
-    <div class="container content">
-        <h1>Student Home</h1>
-        <p>This is your student home page. Use the navigation links below to explore hackathons.</p>
+    <div class="container mt-5">
+        <h1>Sponsor Home</h1>
+        <p>Welcome to the sponsor's dashboard. Use the navigation links below to manage your sponsorships.</p>
         <div>
-            <a class="btn btn-primary" href="{% url 'hackathon_list' %}">View Hackathons</a>
-            <a class="btn btn-secondary" href="{% url 'participated_hackathons' %}">Participated Hackathons</a>
+            <a class="btn btn-primary" href="{% url 'sponsored_hackathons' %}">My Sponsorships</a>
+            <a class="btn btn-secondary" href="{% url 'hackathon_list' %}">Create Sponsorship</a>
         </div>
     </div>
 

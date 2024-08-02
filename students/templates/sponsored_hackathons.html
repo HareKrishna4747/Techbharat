@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsored Hackathons</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand {
+            font-weight: bolder;
+            font-size: 35px;
+        }
+        .btn-primary {
+            background-color: #4c6ef5;
+            border-color: #4c6ef5;
+            margin-right: 10px;
+        }
+        .btn-primary:hover {
+            background-color: #3b5bdb;
+            border-color: #3b5bdb;
+        }
+        .nav-link {
+            color: #6c757d;
+            font-weight: bold;
+        }
+        .nav-link:hover {
+            color: #4c6ef5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        {% if user.is_authenticated and user.student %}
+            <a class="navbar-brand" href="{% url 'student_home' %}">Hackभारत</a>
+        {% elif user.is_authenticated and user.sponsor %}
+            <a class="navbar-brand" href="{% url 'sponsor_home' %}">Hackभारत</a>
+        {% else %}
+            <a class="navbar-brand" href="{% url 'organizer_home' user.username %}">Hackभारत</a>
+        {% endif %}
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    {% if user.is_authenticated and user.student %}
+                        <a class="nav-link" href="{% url 'participated_hackathons' %}">My Participated Hackathons</a>
+                    {% elif user.is_authenticated %}
+                        <a class="nav-link" href="{% url 'sponsored_hackathons' %}">My Hackathons</a>
+                    {% else %}
+                        <a class="nav-link" href="#">HackNext</a>
+                    {% endif %}
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Hackathons near me</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">National hackathons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Private hackathons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About us</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">Log out</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{% url 'login' %}">Log in</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1>My Sponsored Hackathons</h1>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>S. No.</th>
+                    <th>Hackathon Name</th>
+                    <th>Organizer Details</th>
+                    <th>Location</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hackathon in sponsored_hackathons %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ hackathon.title }}</td>
+                        <td>{{ hackathon.organizer }}</td>
+                        <td>{{ hackathon.location }}</td>
+                        <td>{{ hackathon.start_date|date:"d-M-Y" }}</td>
+                        <td>{{ hackathon.end_date|date:"d-M-Y" }}</td>
+                        <td>
+                            <form action="{% url 'withdraw_sponsorship' hackathon.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Withdraw Sponsorship</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7">No sponsored hackathons found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
