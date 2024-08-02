@@ -68,24 +68,11 @@
             }
         }
         function confirmSponsor(hackathonId) {
-            if (confirm('Are you sure you want to sponsor this hackathon?')) {
-                fetch(`/sponsor_hackathon/${hackathonId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('You are now sponsoring this hackathon!');
-                        location.reload();  // Reload the page to reflect the change
-                    } else {
-                        alert('There was an error. Please try again.');
-                    }
-                });
-            }
-        }
+            if (confirm('Are you sure you want to sponsor this hackathon?'))
+            {
+                window.location.href = `/sponsor_form/${hackathonId}/`;
+            }} 
+        
 
         function confirmWithdrawSponsorship(hackathonId, hackathonTitle) {
             if (confirm(`Are you sure you want to withdraw sponsorship from '${hackathonTitle}'?`)) {

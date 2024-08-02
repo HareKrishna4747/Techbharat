@@ -226,3 +226,52 @@ def sponsored_hackathons(request):
     sponsor = get_object_or_404(Sponsor, user=request.user)
     sponsored_hackathons = sponsor.sponsored_hackathons.all()
     return render(request, 'sponsored_hackathons.html', {'sponsored_hackathons': sponsored_hackathons})
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db import IntegrityError
+from .models import Hackathon, Sponsorship
+from .forms import SponsorshipForm
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db import IntegrityError
+from django.contrib.auth.decorators import login_required
+from .models import Hackathon, Sponsor, Sponsorship
+from .forms import SponsorshipForm
+
+@login_required
+def sponsor_form(request, hackathon_id):
+    hackathon = get_object_or_404(Hackathon, id=hackathon_id)
+    user = request.user
+    
+    # Check if the user has already sponsored this hackathon
+    existing_sponsorship = Sponsorship.objects.filter(hackathon=hackathon, user=user).first()
+    
+    if existing_sponsorship:
+        return render(request, 'students/sponsor_form.html', {
+            'hackathon': hackathon,
+            'form': SponsorshipForm(),  # You might want to pass an existing form or a different message here
+            'error_message': 'You have already sponsored this hackathon.'
+        })
+
+    if request.method == 'POST':
+        form = SponsorshipForm(request.POST)
+        if form.is_valid():
+            try:
+                sponsorship = form.save(commit=False)
+                sponsorship.hackathon = hackathon
+                sponsorship.user = user
+                sponsorship.save()
+                
+                # Add hackathon to the sponsor's list
+                sponsor, created = Sponsor.objects.get_or_create(user=user)
+                if hackathon not in sponsor.sponsored_hackathons.all():
+                    sponsor.sponsored_hackathons.add(hackathon)
+                    
+                return redirect('sponsored_hackathons')  # Ensure this name matches the URL pattern name
+            except IntegrityError:
+                form.add_error(None, 'Error occurred while saving sponsorship.')
+    else:
+        form = SponsorshipForm()
+
+    return render(request, 'students/sponsor_form.html', {
+        'hackathon': hackathon,
+        'form': form
+    })
