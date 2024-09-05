@@ -67,3 +67,24 @@ class SponsorshipForm(forms.ModelForm):
         model = Sponsorship
         fields = ['amount', 'message']
 
+from .models import Student, Organizer, Hackathon, Room
+class RoomCreationForm(forms.ModelForm):
+    class Meta:
+        model = Room
+        fields = ['name', 'description']
+
+    # Assuming you want to add a MultiSelect field for choosing students to invite
+    students = forms.ModelMultipleChoiceField(
+        queryset=Student.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Invite Students"
+    )
+
+class MembershipRequestForm(forms.Form):
+    request_id = forms.IntegerField(widget=forms.HiddenInput)
+    action = forms.ChoiceField(
+        choices=[('approve', 'Approve'), ('reject', 'Reject')],
+        widget=forms.RadioSelect,
+        label="Action"
+    )

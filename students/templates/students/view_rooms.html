@@ -1,0 +1,13 @@
+<h2>Your Rooms</h2>
+
+{% if rooms %}
+    <ul>
+        {% for room in rooms %}
+            <li>{{ room.name }} - {{ room.description }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You are not part of any rooms.</p>
+{% endif %}
+
+<a href="{% url 'create_room' %}">Create a new room</a>

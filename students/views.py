@@ -226,3 +226,101 @@ def sponsored_hackathons(request):
     sponsor = get_object_or_404(Sponsor, user=request.user)
     sponsored_hackathons = sponsor.sponsored_hackathons.all()
     return render(request, 'sponsored_hackathons.html', {'sponsored_hackathons': sponsored_hackathons})
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Hackathon, Student, Room, MembershipRequest
+from .forms import RoomCreationForm
+
+@login_required
+def community_page(request):
+    # Display the community page with options to view rooms or create a new room
+    student = get_object_or_404(Student, user=request.user)
+    rooms = Room.objects.filter(members=student)
+    return render(request, 'students/community_page.html', {'rooms': rooms})
+
+@login_required
+def create_room(request):
+    if request.method == 'POST':
+        form = RoomCreationForm(request.POST)
+        if form.is_valid():
+            room = form.save(commit=False)
+            room.creator = get_object_or_404(Student, user=request.user)
+            room.save()
+            form.save_m2m()  # Save the many-to-many relationships (members)
+
+            # Add the creator to the room directly
+            room.members.add(room.creator)
+
+            # Send membership requests to other selected members
+            for member in form.cleaned_data['students']:
+                if member != room.creator:
+                    MembershipRequest.objects.create(room=room, student=member, is_approved=False)
+
+            return redirect('community_page')
+    else:
+        form = RoomCreationForm()
+
+    return render(request, 'students/create_room.html', {'form': form})
+
+@login_required
+def view_pending_requests(request):
+    pending_requests = MembershipRequest.objects.filter(is_approved=False)
+    return render(request, 'pending_requests.html', {'pending_requests': pending_requests})
+from django.shortcuts import redirect, get_object_or_404
+from django.http import HttpResponse
+from .models import MembershipRequest
+@login_required
+@csrf_exempt
+def handle_membership_request(request, request_id):
+    if request.method != 'POST':
+        return HttpResponseBadRequest("Invalid request method.")
+
+    action = request.POST.get('action')
+    if action not in ['approve', 'reject']:
+        return HttpResponseBadRequest("Invalid action.")
+
+    membership_request = get_object_or_404(MembershipRequest, id=request_id)
+    room = membership_request.room
+    student = membership_request.student
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'approve':
+            # Add the student to the room's members
+            room.members.add(student)
+            # Mark the request as approved
+            membership_request.is_approved = True
+            membership_request.save()
+        elif action == 'reject':
+            # Mark the request as rejected
+            membership_request.is_approved = False
+            membership_request.save()
+
+    return redirect('view_pending_requests')
+
+def approve_request(request, request_id):
+    membership_request = get_object_or_404(MembershipRequest, id=request_id)
+    
+    if not membership_request.is_approved:  # Check if the request is not already approved
+        # Add user to room
+        membership_request.room.members.add(membership_request.user)
+        
+        # Mark request as approved
+        membership_request.is_approved = True
+        membership_request.save()
+        
+        return redirect('view_pending_requests')  # Redirect to pending requests page or any other page
+    else:
+        # Handle cases where the request is already approved
+        return HttpResponse('Request has already been processed or is invalid.')
+def reject_request(request, request_id):
+    membership_request = get_object_or_404(MembershipRequest, id=request_id)
+    
+    if not membership_request.is_approved:
+        membership_request.delete()  # Or mark as rejected if you prefer
+        return redirect('view_pending_requests')
+    else:
+        return HttpResponse('Request has already been processed or is invalid.')

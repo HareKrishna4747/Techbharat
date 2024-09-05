@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Page</title>
+
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Community Page</h1>
+    </header>
+
+    <nav>
+        <ul>
+
+            <li><a href="{% url 'create_room' %}">Create Room</a></li>
+            <li><a href="{% url 'view_pending_requests' %}">See Pending Requests</a></li>
+        </ul>
+    </nav>
+
+    <section>
+        <h2>Rooms You're Part Of</h2>
+        <ul>
+            {% for room in rooms %}
+                <li>{{ room.name }} - <a href="#">View Details</a></li>
+            {% empty %}
+                <li>You are not part of any rooms yet.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Community Hackathons</p>
+    </footer>
+</body>
+</html>

@@ -26,6 +26,7 @@ class Hackathon(models.Model):
 
     def __str__(self):
         return self.title
+
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     participated_hackathons = models.ManyToManyField(Hackathon, related_name='participants', blank=True)
@@ -54,6 +55,38 @@ class Sponsorship(models.Model):
         return f"{self.user.username} sponsoring {self.hackathon.title}"
 
 
+class Room(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    creator = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='created_rooms')
+    members = models.ManyToManyField(Student, related_name='rooms', through='RoomMembership')
+
+    def __str__(self):
+        return self.name
+
+class RoomMembership(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    is_approved = models.BooleanField(default=False)
+    date_requested = models.DateTimeField(default=timezone.now)
+    date_approved = models.DateTimeField(blank=True, null=True)
+
+    def approve(self):
+        self.is_approved = True
+        self.date_approved = timezone.now()
+        self.save()
+
+    def __str__(self):
+        return f"{self.student.user.username} - {self.room.name}"
 
 
+from django.db import models
+from .models import Room, Student
 
+class MembershipRequest(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    is_approved = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f'{self.student} - {self.room}'

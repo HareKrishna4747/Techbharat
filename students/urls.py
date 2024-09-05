@@ -3,7 +3,7 @@ from . import views
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LogoutView
 from django.urls import path
-from .views import participate_in_hackathon,my_hackathons,CancelHackathonView,sponsor_hackathon, withdraw_sponsorship,sponsored_hackathons
+from .views import participate_in_hackathon,my_hackathons,CancelHackathonView,sponsor_hackathon, withdraw_sponsorship,sponsored_hackathons,approve_request,handle_membership_request
 urlpatterns = [
     path('', views.home, name='home'),
     path('student_home/', views.student_home, name='student_home'),
@@ -27,6 +27,12 @@ urlpatterns = [
     path('sponsor_hackathon/<int:hackathon_id>/', views.sponsor_hackathon, name='sponsor_hackathon'),
     path('withdraw_sponsorship/<int:hackathon_id>/', withdraw_sponsorship, name='withdraw_sponsorship'),
     path('sponsored_hackathons/', sponsored_hackathons, name='sponsored_hackathons'),
+    path('community/', views.community_page, name='community_page'),
+    path('create_room/', views.create_room, name='create_room'),
+    path('pending_requests/', views.view_pending_requests, name='view_pending_requests'),
+    path('handle_membership_request/<int:request_id>/', handle_membership_request, name='handle_membership_request'),
+    path('approve_request/<int:request_id>/', approve_request, name='approve_request'),
+    path('reject_request/<int:request_id>/', views.reject_request, name='reject_request'),
 
 
 ]
