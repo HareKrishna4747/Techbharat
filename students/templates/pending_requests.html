@@ -1,14 +1,77 @@
-{% for request in pending_requests %}
-    <form method="post" action="{% url 'handle_membership_request' request.id %}">
-        {% csrf_token %}
-        <p>{{ request.room.name }} - {{ request.user.username }}</p>
-        <input type="hidden" name="request_id" value="{{ request.id }}">
-        <label>
-            <input type="radio" name="action" value="approve" required> Approve
-        </label>
-        <label>
-            <input type="radio" name="action" value="reject" required> Reject
-        </label>
-        <button type="submit">Submit</button>
-    </form>
-{% endfor %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register as Organizer</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'home' %}" style="font-weight: bolder; font-size: 35px;">Hackभारत</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Hackathons near me</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">National hackathons</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Private hackathons</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">About us</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-primary" href="#">Sign up</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container mt-4">
+    <h1>Pending Membership Requests</h1>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>S. No.</th>
+                <th>Room Name</th>
+                <th>Requested By</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in pending_requests %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ request.room.name }}</td>
+                    <td>{{ request.user.username }}</td>
+                    <td>
+                        <form method="post" action="{% url 'handle_membership_request' request.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="request_id" value="{{ request.id }}">
+                            <label class="me-2">
+                                <input type="radio" name="action" value="approve" required> Approve
+                            </label>
+                            <label class="me-2">
+                                <input type="radio" name="action" value="reject" required> Reject
+                            </label>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No pending membership requests.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

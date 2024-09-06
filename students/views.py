@@ -243,27 +243,30 @@ def community_page(request):
 
 @login_required
 def create_room(request):
+    student = get_object_or_404(Student, user=request.user)
     if request.method == 'POST':
-        form = RoomCreationForm(request.POST)
+        form = RoomCreationForm(request.POST, student=student)
         if form.is_valid():
             room = form.save(commit=False)
-            room.creator = get_object_or_404(Student, user=request.user)
+            room.creator = student
             room.save()
-            form.save_m2m()  # Save the many-to-many relationships (members)
+            form.save_m2m()
 
-            # Add the creator to the room directly
-            room.members.add(room.creator)
+            # Add the creator directly to the room's members
+            room.members.add(student)
 
-            # Send membership requests to other selected members
-            for member in form.cleaned_data['students']:
-                if member != room.creator:
-                    MembershipRequest.objects.create(room=room, student=member, is_approved=False)
+            # Get the selected students from the form
+            selected_students = form.cleaned_data.get('students', [])
+            
+            # Send requests to the selected students
+            for selected_student in selected_students:
+                MembershipRequest.objects.create(room=room, student=selected_student)
 
             return redirect('community_page')
     else:
-        form = RoomCreationForm()
-
+        form = RoomCreationForm(student=student)
     return render(request, 'students/create_room.html', {'form': form})
+
 
 @login_required
 def view_pending_requests(request):
@@ -312,7 +315,7 @@ def approve_request(request, request_id):
         membership_request.is_approved = True
         membership_request.save()
         
-        return redirect('view_pending_requests')  # Redirect to pending requests page or any other page
+        return redirect('community_page')  # Redirect to pending requests page or any other page
     else:
         # Handle cases where the request is already approved
         return HttpResponse('Request has already been processed or is invalid.')

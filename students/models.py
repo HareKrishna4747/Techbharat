@@ -27,10 +27,16 @@ class Hackathon(models.Model):
     def __str__(self):
         return self.title
 
+class Skill(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     participated_hackathons = models.ManyToManyField(Hackathon, related_name='participants', blank=True)
-
+    skills = models.ManyToManyField(Skill, related_name='students', blank=True)  # New field
 
     def __str__(self):
         return self.user.username
