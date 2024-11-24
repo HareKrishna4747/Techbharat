@@ -6,6 +6,10 @@ from django.utils import timezone
 class Organizer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.user.username  # You can also use self.user.get_full_name() if full names are used
+
+
 class Sponsor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sponsored_hackathons = models.ManyToManyField('Hackathon', related_name='sponsors')

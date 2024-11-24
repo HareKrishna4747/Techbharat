@@ -134,10 +134,8 @@
                     {% elif user.is_authenticated and user.sponsor %}
                         <a class="nav-link" href="{% url 'sponsored_hackathons' %}">My Hackathons</a>                    
                     {% elif user.is_authenticated %}
-                        <a class="nav-link" href="{% url 'organizer_home' user.username %}">HackNext</a>
                         <a class="nav-link" href="{% url 'my_hackathons' %}">My Hackathons</a>
                     {% else %}
-                        <a class="nav-link" href="#">HackNext</a>
                     {% endif %}
                 </li>
                 <li class="nav-item">
